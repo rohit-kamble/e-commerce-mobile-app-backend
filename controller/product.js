@@ -7,13 +7,32 @@ import { Category } from "../models/category.js";
 
 export const getAllProduct = asyncError(async (req, res, next) => {
   const { keyword, category } = req.query;
-  const products = await Product.find({
-    name: {
-      $regex: keyword ? keyword : "",
-      $options: "i",
-    },
-    category: category ? category : undefined,
-  });
+  let products = [];
+  if (keyword || category) {
+    if (keyword) {
+      products = await Product.find({
+        name: {
+          $regex: keyword ? keyword : "",
+          $options: "i",
+        },
+      });
+    } else if (category) {
+      products = await Product.find({
+        category: category ? category : undefined,
+      });
+    } else {
+      products = await Product.find({
+        name: {
+          $regex: keyword ? keyword : "",
+          $options: "i",
+        },
+        category: category ? category : undefined,
+      });
+    }
+  } else {
+    products = await Product.find();
+  }
+
   res.status(200).json({
     success: true,
     products: products,
