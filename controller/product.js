@@ -29,6 +29,8 @@ export const getAllProduct = asyncError(async (req, res, next) => {
         category: category ? category : undefined,
       });
     }
+  } else if (keyword === "") {
+    products = await Product.find();
   } else {
     products = await Product.find();
   }
